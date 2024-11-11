@@ -1,0 +1,105 @@
+-- selecionando a quantidade de ingressos vendidos 
+select fk_id_compra as id_compra, sum(quantidade) as total_ingressos
+from ingresso_compra
+group by fk_id_compra;
+
+-- registro na tabela compra
+insert into compra (data_compra, fk_id_usuario)
+    values ("2024-11-11 08:30:04", 1);
+
+insert into compra (data_compra, fk_id_usuario)
+    values (now(), 2);
+
+-- registro na tabela ingresso_compra
+insert into ingresso_compra (quantidade, fk_id_ingresso, fk_id_compra) values 
+    (10, 1, 1),
+    (5, 2, 1);
+
+insert into ingresso_compra (quantidade, fk_id_ingresso, fk_id_compra) values 
+    (1, 1, 2);
+
+-- listar o total de ingressos comprados apartir de certa quantidade
+select fk_id_compra as id_compra, sum(quantidade) as total_ingressos
+from ingresso_compra 
+group by fk_id_compra having sum(quantidade) > 2;
+
+-- listar os tipos únicos de ingressos disponíveis
+select distinct tipo from ingresso;
+
+-- listagem geral de pessoas e entidade envolvidas 
+select name as nome from usuario
+union
+select nome from organizador;
+
+-- listar todos os contatos de email
+select email from usuario
+union 
+select email from organizador;
+
+-- listar eventos e ingressos
+select nome as info from evento 
+union 
+select tipo as info from ingresso;
+
+-- ex com union all
+select nome as info from evento 
+union all
+select tipo as info from ingresso;
+
+select fk_id_organizador, local as "local / contato" from evento
+union
+select id_organizador, telefone as contato from organizador;
+
+select * from compra, ingresso_compra;
+
+select * from compra c, ingresso_compra ic
+where c.id_compra = ic.fk_id_compra;
+
+select
+    c.id_compra, 
+    ic.fk_id_ingresso as ingresso_id,
+    ic.quantidade,
+    round(i.preco, 2) as valor_unitario, 
+    round((i.preco * ic.quantidade), 2) as valor_total
+from 
+    c.id_compra = ic.fk_id_compra
+    and ic.fk_id_ingresso = i.id_ingresso
+order by
+    c.id_compra;
+
+--
+select
+    c.id_compra, 
+    ic.fk_id_ingresso as ingresso_id,
+    ic.quantidade,
+    round(i.preco, 2) as valor_unitario, 
+    round((i.preco * ic.quantidade), 2) as valor_total
+from 
+    compra c, 
+    ingresso_compra ic,
+    ingresso i
+where
+    c.id_compra = ic.fk_id_compra
+    and ic.fk_id_ingresso = i.id_ingresso
+order by
+    c.id_compra;
+
+-- select com inner join
+select
+    c.id_compra, 
+    ic.fk_id_ingresso as ingresso_id,
+    ic.quantidade,
+    round(i.preco, 2) as valor_unitario, 
+    round((i.preco * ic.quantidade), 2) as valor_total
+from 
+    compra c
+inner join
+    ingresso_compra ic on c.id_compra = ic.fk_id_compra
+inner join
+    ingresso i on ic.fk_id_ingresso = i.id_ingresso
+order by 
+    c.id_compra;
+
+
+
+
